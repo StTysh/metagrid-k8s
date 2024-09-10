@@ -32,5 +32,15 @@ data:
   REACT_APP_SEARCH_URL: {{ .Values.searchUrl }}
   REACT_APP_ESGF_NODE_STATUS_URL: {{ .Values.esgfNodeStatusUrl }}
   REACT_APP_ESGF_SOLR_URL: {{ .Values.solrUrl }}
+
+  # Add DB6-related environment variables
+  DB6_HOST: {{ .Values.db6.host | default "db6.ceda.ac.uk" }}
+  DB6_PORT: {{ .Values.db6.port | default "5432" | quote }}
+  DB6_USER: {{ .Values.db6.user }}
+  DB6_PASSWORD: {{ .Values.db6.password }}
+  DB6_DB: {{ .Values.db6.database | default }}
+  USE_DB6: {{ .Values.db6.enabled | default }}
+
+
   POSTGRES_HOST: {{ include "metagrid.pg_host" . }}
   POSTGRES_PORT: {{ include "metagrid.pg_port" . | quote }}
