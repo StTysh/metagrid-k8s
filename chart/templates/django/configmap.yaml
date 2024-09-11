@@ -21,7 +21,7 @@ data:
   DOMAIN_NAME: {{ default "127.0.0.1" .Values.ingress.django.host }}
   DOMAIN_SUBDIRECTORY: {{ trimPrefix "/" .Values.django.urlPath }}
   CORS_ALLOWED_ORIGINS: {{ include "metagrid.django.corsOriginWhitelist" . }}
-  # CORS_ORIGIN_WHITELIST: {{ include "metagrid.django.corsOriginWhitelist" . }}
+  CORS_ORIGIN_WHITELIST: {{ include "metagrid.django.corsOriginWhitelist" . }}
   {{- if eq .Values.authType "globus" }}
   GLOBUS_CLIENT_KEY: {{ .Values.globus.backend.clientID }}
   {{- end }}
