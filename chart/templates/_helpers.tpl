@@ -305,6 +305,9 @@ volumes:
 {{- else if eq .type "secret" }}
 - secret:
     secretName: {{ .resourceName }}
+{{- else if eq .type "emptydir" }}
+  - emptyDir: {}
+    name: {{ .resourceName }}
 {{- end }}
   name: {{ .name }}
 {{- end }}
