@@ -300,15 +300,14 @@ tolerations:
 {{- with .persistence }}
 volumes:
 {{- if eq .type "configmap" }}
-  - name: {{ .name }}
-    configMap:
-      name: {{ .resourceName }}
+- configMap:
+    name: {{ .resourceName }}
 {{- else if eq .type "secret" }}
-  - name: {{ .name }}
-    secret:
-      secretName: {{ .resourceName }}
-{{- else if eq .type "emptydir" }}
-  - name: {{ .name }}
-    emptyDir: {}
+- secret:
+    secretName: {{ .resourceName }}
+{{- else if eq .type "emptyDir" }}
+- emptyDir: {}    
+{{- end }}
+  name: {{ .name }}
 {{- end }}
 {{- end }}
