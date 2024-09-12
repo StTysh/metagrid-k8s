@@ -252,12 +252,14 @@ containers:
   {{- end }}
   {{- with .persistence }}
   volumeMounts:
+  {{- range . }}
   - mountPath: {{ .mountPath }}
     name: {{ .name }}
     readOnly: {{ default "false" .readOnly }}
     {{- with .subPath }}
     subPath: {{ . }}
     {{- end }}
+  {{- end }}
   {{- end }}
 {{- with .dnsConfig }}
 dnsConfig:
@@ -299,6 +301,7 @@ tolerations:
 {{- end }}
 {{- with .persistence }}
 volumes:
+{{- range . }}
 {{- if eq .type "configmap" }}
 - configMap:
     name: {{ .resourceName }}
@@ -309,5 +312,6 @@ volumes:
 - emptyDir: {}    
 {{- end }}
   name: {{ .name }}
+{{- end }}
 {{- end }}
 {{- end }}
