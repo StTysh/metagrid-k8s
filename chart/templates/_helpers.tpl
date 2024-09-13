@@ -320,19 +320,36 @@ tolerations:
 {{- with .persistence }}
 
 
-volumes:
+# volumes:
+#   {{- if eq .type "configmap" }}
+#   - configMap:
+#       name: {{ .resourceName }}
+#   {{- else if eq .type "secret" }}
+#   - secret:
+#       secretName: {{ .resourceName }}
+#   {{- else if eq .type "emptyDir" }}
+#   - emptyDir: {}    
+#   {{- end }}
+#     name: {{ .name }}
+# {{- end }}
+
+ volumes:
   {{- if eq .type "configmap" }}
   - configMap:
       name: {{ .resourceName }}
+    name: {{ .name }}
   {{- else if eq .type "secret" }}
   - secret:
       secretName: {{ .resourceName }}
+    name: {{ .name }}
   {{- else if eq .type "emptyDir" }}
   - emptyDir: {}    
-  {{- end }}
     name: {{ .name }}
-{{- end }}
-
+  {{- end }}
+  {{- end }}
+  {{- if .extraVolumes }}
+  {{- toYaml .extraVolumes | nindent 2 }}
+  {{- end }}
 
 
 {{- end }}
