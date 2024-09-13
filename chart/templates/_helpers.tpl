@@ -173,7 +173,6 @@ Django CORS_ORIGIN_WHITELIST
 {{- define "metagrid.django.corsOriginWhitelist" -}}
 {{- printf "%s" (include "metagrid.react.baseUrl" .) }}
 {{- end }}
-
 {{- define "metagrid.podSpec" -}}
 {{- with .affinity }}
 affinity:
@@ -285,6 +284,8 @@ volumes:
 {{- else if eq .type "secret" }}
 - secret:
     secretName: {{ .resourceName }}
+{{- else if eq .type "emptyDir" }}
+- emptyDir: {}    
 {{- end }}
   name: {{ .name }}
 {{- end }}
