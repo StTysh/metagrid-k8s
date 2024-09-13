@@ -239,7 +239,7 @@ containers:
     {{- end }}
   {{- end }}
   {{- if .extraVolumeMounts }}
-  {{- toYaml .extraVolumeMounts | nindent 4 }}
+  {{- toYaml .extraVolumeMounts | nindent 6 }}
   {{- end }}
 {{- with .dnsConfig }}
 dnsConfig:
@@ -293,6 +293,6 @@ volumes:
   name: {{ .name }}
 {{- end }}
 {{- if .extraVolumes }}
-{{- toYaml .extraVolumes | nindent 4 }}
+{{- toYaml .extraVolumes | nindent 6 }}
 {{- end }}
 {{- end }}
