@@ -250,20 +250,38 @@ containers:
   startupProbe:
   {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .persistence }}
-  volumeMounts:
-  - mountPath: {{ .mountPath }}
-    name: {{ .name }}
-    readOnly: {{ default "false" .readOnly }}
-    {{- with .subPath }}
-    subPath: {{ . }}
-    {{- end }}
+
+
+
+  # {{- with .persistence }}
+  # volumeMounts:
+  # - mountPath: {{ .mountPath }}
+  #   name: {{ .name }}
+  #   readOnly: {{ default "false" .readOnly }}
+  #   {{- with .subPath }}
+  #   subPath: {{ . }}
+  #   {{- end }}
+  # {{- end }}
+
+
+{{- with .extraVolumeMounts }}
+{{- $extraVolumeMounts := . | toYaml | nindent 4 }}
+{{- end }}
+volumeMounts:
+{{- with .persistence }}
+- mountPath: {{ .mountPath }}
+  name: {{ .name }}
+  readOnly: {{ default "false" .readOnly }}
+  {{- with .subPath }}
+  subPath: {{ . }}
   {{- end }}
-  {{- with .extraVolumeMounts }}
-  volumeMounts:
-  {{- end }}
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
+{{- end }}
+{{- if .extraVolumeMounts }}
+{{- $extraVolumeMounts }}
+{{- end }}
+
+
+
 {{- with .dnsConfig }}
 dnsConfig:
 {{- toYaml . | nindent 2 }}
@@ -302,8 +320,10 @@ securityContext:
 tolerations:
 {{- toYaml . | nindent 2 }}
 {{- end }}
-  {{- with .persistence }}
-  volumes:
+{{- with .persistence }}
+
+
+volumes:
   {{- if eq .type "configmap" }}
   - configMap:
       name: {{ .resourceName }}
@@ -314,5 +334,8 @@ tolerations:
   - emptyDir: {}    
   {{- end }}
     name: {{ .name }}
-  {{- end }}
+{{- end }}
+
+
+
 {{- end }}
