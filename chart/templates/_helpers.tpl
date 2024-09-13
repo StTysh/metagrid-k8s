@@ -238,6 +238,9 @@ containers:
     subPath: {{ . }}
     {{- end }}
   {{- end }}
+  {{- if .extraVolumeMounts }}
+  {{- toYaml .extraVolumeMounts | nindent 2 }}
+  {{- end }}
 {{- with .dnsConfig }}
 dnsConfig:
 {{- toYaml . | nindent 2 }}
@@ -288,5 +291,8 @@ volumes:
 - emptyDir: {}    
 {{- end }}
   name: {{ .name }}
+{{- end }}
+{{- if .extraVolumes }}
+{{- toYaml .extraVolumes | nindent 2 }}
 {{- end }}
 {{- end }}
