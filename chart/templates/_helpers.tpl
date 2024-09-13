@@ -173,6 +173,7 @@ Django CORS_ORIGIN_WHITELIST
 {{- define "metagrid.django.corsOriginWhitelist" -}}
 {{- printf "%s" (include "metagrid.react.baseUrl" .) }}
 {{- end }}
+
 {{- define "metagrid.podSpec" -}}
 {{- with .affinity }}
 affinity:
@@ -238,55 +239,53 @@ containers:
     subPath: {{ . }}
     {{- end }}
   {{- end }}
-  {{- with .dnsConfig }}
-  dnsConfig:
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
-  {{- with .dnsPolicy }}
-  dnsPolicy: {{ . }}
-  {{- end }}
-  {{- with .image.pullSecrets }}
-  imagePullSecrets:
-  - name: {{ include "metagrid.fullname" .TemplateValues }}
-  {{- end }}
-  {{- with .nodeSelector }}
-  nodeSelector:
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
-  {{- with .preemptionPolicy }}
-  preemptionPolicy: {{ . }}
-  {{- end }}
-  {{- with .priority }}
-  priority: {{ . }}
-  {{- end }}
-  {{- with .priorityClassName }}
-  priorityClassName: {{ . }}
-  {{- end }}
-  {{- with .restartPolicy }} 
-  restartPolicy: {{ . }}
-  {{- end }}
-  {{- with .runtimeClassName }}
-  runtimeClassName: {{ . }}
-  {{- end }}
-  {{- with .podSecurityContext }}
-  securityContext:
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
-  {{- with .tolerations }}
-  tolerations:
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
-  {{- with .persistence }}
-  volumes:
-  {{- if eq .type "configmap" }}
-  - configMap:
-      name: {{ .resourceName }}
-  {{- else if eq .type "secret" }}
-  - secret:
-      secretName: {{ .resourceName }}
-  {{- else if eq .type "emptydir" }}
-  - emptyDir: {}
-  {{- end }}
-    name: {{ .name }}
-  {{- end }}
+{{- with .dnsConfig }}
+dnsConfig:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .dnsPolicy }}
+dnsPolicy: {{ . }}
+{{- end }}
+{{- with .image.pullSecrets }}
+imagePullSecrets:
+- name: {{ include "metagrid.fullname" .TemplateValues }}
+{{- end }}
+{{- with .nodeSelector }}
+nodeSelector:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .preemptionPolicy }}
+preemptionPolicy: {{ . }}
+{{- end }}
+{{- with .priority }}
+priority: {{ . }}
+{{- end }}
+{{- with .priorityClassName }}
+priorityClassName: {{ . }}
+{{- end }}
+{{- with .restartPolicy }} 
+restartPolicy: {{ . }}
+{{- end }}
+{{- with .runtimeClassName }}
+runtimeClassName: {{ . }}
+{{- end }}
+{{- with .podSecurityContext }}
+securityContext:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .tolerations }}
+tolerations:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .persistence }}
+volumes:
+{{- if eq .type "configmap" }}
+- configMap:
+    name: {{ .resourceName }}
+{{- else if eq .type "secret" }}
+- secret:
+    secretName: {{ .resourceName }}
+{{- end }}
+  name: {{ .name }}
+{{- end }}
 {{- end }}
