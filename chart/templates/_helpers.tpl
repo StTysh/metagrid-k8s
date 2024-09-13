@@ -250,7 +250,18 @@ containers:
   startupProbe:
   {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if not .Values.django.multipleVolumesEnabling }}
   {{- with .persistence }}
+  volumeMounts:
+  - mountPath: {{ .mountPath }}
+    name: {{ .name }}
+    readOnly: {{ default "false" .readOnly }}
+    {{- with .subPath }}
+    subPath: {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- else }}
+  {{- with .multipleVolumes }}
   volumeMounts:
   {{- range . }}
   - mountPath: {{ .mountPath }}
@@ -259,6 +270,7 @@ containers:
     {{- with .subPath }}
     subPath: {{ . }}
     {{- end }}
+  {{- end }}
   {{- end }}
   {{- end }}
 {{- with .dnsConfig }}
@@ -299,19 +311,35 @@ securityContext:
 tolerations:
 {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- with .persistence }}
-volumes:
-{{- range . }}
-{{- if eq .type "configmap" }}
-- configMap:
-    name: {{ .resourceName }}
-{{- else if eq .type "secret" }}
-- secret:
-    secretName: {{ .resourceName }}
-{{- else if eq .type "emptyDir" }}
-- emptyDir: {}    
-{{- end }}
-  name: {{ .name }}
-{{- end }}
-{{- end }}
+{{- if not .Values.django.multipleVolumesEnabling }}
+  {{- with .persistence }}
+  volumes:
+  {{- if eq .type "configmap" }}
+  - configMap:
+      name: {{ .resourceName }}
+  {{- else if eq .type "secret" }}
+  - secret:
+      secretName: {{ .resourceName }}
+  {{- else if eq .type "emptyDir" }}
+  - emptyDir: {}    
+  {{- end }}
+    name: {{ .name }}
+  {{- end }}
+  {{- else }}
+  {{- with .multipleVolumes }}
+  volumes:
+  {{- range . }}
+  {{- if eq .type "configmap" }}
+  - configMap:
+      name: {{ .resourceName }}
+  {{- else if eq .type "secret" }}
+  - secret:
+      secretName: {{ .resourceName }}
+  {{- else if eq .type "emptyDir" }}
+  - emptyDir: {}
+  {{- end }}
+    name: {{ .name }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
 {{- end }}
