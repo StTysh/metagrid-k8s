@@ -317,9 +317,9 @@ securityContext:
 tolerations:
 {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- with .persistence }}
 
 
+# {{- with .persistence }}
 # volumes:
 #   {{- if eq .type "configmap" }}
 #   - configMap:
@@ -333,23 +333,23 @@ tolerations:
 #     name: {{ .name }}
 # {{- end }}
 
- volumes:
+
+volumes:
+{{- with .persistence }}
+- name: {{ .name }}
   {{- if eq .type "configmap" }}
-  - configMap:
-      name: {{ .resourceName }}
-    name: {{ .name }}
+  configMap:
+    name: {{ .resourceName }}
   {{- else if eq .type "secret" }}
-  - secret:
-      secretName: {{ .resourceName }}
-    name: {{ .name }}
+  secret:
+    secretName: {{ .resourceName }}
   {{- else if eq .type "emptyDir" }}
-  - emptyDir: {}    
-    name: {{ .name }}
+  emptyDir: {}
   {{- end }}
-  {{- end }}
-  {{- if .extraVolumes }}
-  {{- toYaml .extraVolumes | nindent 2 }}
-  {{- end }}
+{{- end }}
+{{- if .extraVolumes }}
+{{- toYaml .extraVolumes | nindent 2 }}
+{{- end }}
 
 
 {{- end }}
