@@ -4,7 +4,6 @@ Expand the name of the chart.
 {{- define "metagrid.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
-
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -22,14 +21,12 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 {{- end }}
-
 {{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "metagrid.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
-
 {{/*
 Common labels
 */}}
@@ -41,7 +38,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
-
 {{/*
 Selector labels
 */}}
@@ -49,7 +45,6 @@ Selector labels
 app.kubernetes.io/name: {{ include "metagrid.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
 {{/*
 Postgres host
 */}}
@@ -100,7 +95,6 @@ Postgres pass
 {{- .Values.ownpgserver.password }}
 {{- end }}
 {{- end }}
-
 {{/*
 Postgres URI
 */}}
@@ -109,8 +103,6 @@ Postgres URI
 postgres://{{ include "metagrid.pg_user" $ }}:{{ include "metagrid.pg_pass" $ }}@{{ include "metagrid.pg_host" $ }}:{{ include "metagrid.pg_port" $ }}/{{ include "metagrid.pg_db" $ }}
 {{- end }}
 {{- end }}
-
-
 {{/*
 React base url
 */}}
@@ -119,7 +111,6 @@ React base url
 {{- $scheme := ternary "https" "http" (and .Values.ingress.enabled .Values.ingress.tls.enabled) }}
 {{- printf "%s" (default (printf "%s://%s" $scheme $host) .Values.baseUrl) }}
 {{- end }}
-
 {{/*
 React Url
 */}}
@@ -127,7 +118,6 @@ React Url
 {{- $baseUrl := include "metagrid.react.baseUrl" . }}
 {{- printf "%s%s" $baseUrl (printf "/%s" (trimPrefix "/" .Values.react.urlPath)) }}
 {{- end }}
-
 {{/*
 Django base url
 */}}
@@ -136,7 +126,6 @@ Django base url
 {{- $scheme := ternary "https" "http" (and .Values.ingress.enabled .Values.ingress.tls.enabled) }}
 {{- printf "%s" (default (printf "%s://%s" $scheme $host) .Values.baseUrl) }}
 {{- end }}
-
 {{/*
 Django Url
 */}}
@@ -144,7 +133,6 @@ Django Url
 {{- $baseUrl := include "metagrid.django.baseUrl" . }}
 {{- printf "%s%s" $baseUrl (printf "/%s" (trimPrefix "/" .Values.django.urlPath)) }}
 {{- end }}
-
 {{/*
 Django login url
 */}}
@@ -152,7 +140,6 @@ Django login url
 {{- $baseUrl := include "metagrid.django.url" . }}
 {{- printf "%s/login/globus/" $baseUrl }}
 {{- end }}
-
 {{/*
 Django logout url
 */}}
@@ -160,7 +147,6 @@ Django logout url
 {{- $baseUrl := include "metagrid.django.url" . }}
 {{- printf "%s/proxy/globus-logout/" $baseUrl }}
 {{- end }}
-
 {{/*
 Django login redirect
 */}}
@@ -168,7 +154,6 @@ Django login redirect
 {{- $baseUrl := include "metagrid.react.url" . }}
 {{- printf "%s/%s" $baseUrl (trimPrefix "/" .Values.django.loginRedirect) }}
 {{- end }}
-
 {{/*
 Django logout redirect
 */}}
@@ -176,21 +161,18 @@ Django logout redirect
 {{- $baseUrl := include "metagrid.react.url" . }}
 {{- printf "%s/%s" $baseUrl (trimPrefix "/" .Values.django.logoutRedirect) }}
 {{- end }}
-
 {{/*
 Django ALLOWED_HOSTS
 */}}
 {{- define "metagrid.djangoAllowedHosts" -}}
 {{- join "," (list "127.0.0.1" "localhost" (printf "%s-django" (include "metagrid.fullname" .)) .Values.ingress.react.host ) -}}
 {{- end }}
-
 {{/*
 Django CORS_ORIGIN_WHITELIST
 */}}
 {{- define "metagrid.django.corsOriginWhitelist" -}}
 {{- printf "%s" (include "metagrid.react.baseUrl" .) }}
 {{- end }}
-
 {{- define "metagrid.podSpec" -}}
 {{- with .affinity }}
 affinity:
@@ -296,15 +278,15 @@ containers:
   {{- end }}
   {{- with .persistence }}
   volumes:
-    {{- if eq .type "configmap" }}
-    - configMap:
-        name: {{ .resourceName }}
-    {{- else if eq .type "secret" }}
-    - secret:
-        secretName: {{ .resourceName }}
-    {{- else if eq .type "emptyDir" }}
-    - emptyDir: {}    
-    {{- end }}
+  {{- if eq .type "configmap" }}
+  - configMap:
+      name: {{ .resourceName }}
+  {{- else if eq .type "secret" }}
+  - secret:
+      secretName: {{ .resourceName }}
+  {{- else if eq .type "emptydir" }}
+  - emptyDir: {}
+  {{- end }}
     name: {{ .name }}
   {{- end }}
 {{- end }}
