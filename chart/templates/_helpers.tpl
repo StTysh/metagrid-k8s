@@ -54,43 +54,62 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Postgres host
 */}}
 {{- define "metagrid.pg_host" -}}
+{{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.pgpool" .Subcharts.postgresql }}
+{{- else }}
+{{- .Values.ownpgserver.host }}
 {{- end }}
-
+{{- end }}
 {{/*
 Postgres port
 */}}
 {{- define "metagrid.pg_port" -}}
+{{- if .Values.postgresql.enabled }}
 {{ .Subcharts.postgresql.Values.service.ports.postgresql }}
+{{- else }}
+{{- .Values.ownpgserver.port }}
 {{- end }}
-
+{{- end }}
 {{/*
 Postgres db
 */}}
 {{- define "metagrid.pg_db" -}}
+{{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.postgresqlDatabase" .Subcharts.postgresql }}
+{{- else }}
+{{- .Values.ownpgserver.database }}
 {{- end }}
-
+{{- end }}
 {{/*
 Postgres user
 */}}
 {{- define "metagrid.pg_user" -}}
+{{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.postgresqlUsername" .Subcharts.postgresql }}
+{{- else }}
+{{- .Values.ownpgserver.username }}
 {{- end }}
-
+{{- end }}
 {{/*
 Postgres pass
 */}}
 {{- define "metagrid.pg_pass" -}}
+{{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.postgresqlPassword" .Subcharts.postgresql }}
+{{- else }}
+{{- .Values.ownpgserver.password }}
+{{- end }}
 {{- end }}
 
 {{/*
 Postgres URI
 */}}
 {{- define "metagrid.pg_uri" -}}
+{{- if .Values.postgresql.enabled }}
 postgres://{{ include "metagrid.pg_user" $ }}:{{ include "metagrid.pg_pass" $ }}@{{ include "metagrid.pg_host" $ }}:{{ include "metagrid.pg_port" $ }}/{{ include "metagrid.pg_db" $ }}
 {{- end }}
+{{- end }}
+
 
 {{/*
 React base url
