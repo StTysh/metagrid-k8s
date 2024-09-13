@@ -260,7 +260,6 @@ containers:
     {{- end }}
   {{- end }}
   {{- with .extraVolumeMounts }}
-  {{ if not .Values.django.permission }}
   volumeMounts:
   {{- end }}
   {{- toYaml . | nindent 4 }}
