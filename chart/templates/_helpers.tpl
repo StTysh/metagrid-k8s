@@ -284,7 +284,7 @@ volumes:
 - secret:
     secretName: {{ .resourceName }}
 {{- else if eq .type "emptyDir" }}
-- emptyDir: {}    
+  emptyDir: {}    
 {{- end }}
   name: {{ .name }}
 {{- end }}
