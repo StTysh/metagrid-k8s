@@ -264,21 +264,18 @@ containers:
   # {{- end }}
 
 
-{{- with .extraVolumeMounts }}
-{{- $extraVolumeMounts := . | toYaml | nindent 4 }}
-{{- end }}
-volumeMounts:
-{{- with .persistence }}
-- mountPath: {{ .mountPath }}
-  name: {{ .name }}
-  readOnly: {{ default "false" .readOnly }}
-  {{- with .subPath }}
-  subPath: {{ . }}
+  volumeMounts:
+  {{- with .persistence }}
+  - mountPath: {{ .mountPath }}
+    name: {{ .name }}
+    readOnly: {{ default "false" .readOnly }}
+    {{- with .subPath }}
+    subPath: {{ . }}
+    {{- end }}
   {{- end }}
-{{- end }}
-{{- if .extraVolumeMounts }}
-{{- $extraVolumeMounts }}
-{{- end }}
+  {{- if .extraVolumeMounts }}
+  {{- toYaml .extraVolumeMounts | nindent 2 }}
+  {{- end }}
 
 
 
