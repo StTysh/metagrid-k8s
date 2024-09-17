@@ -52,7 +52,6 @@ Postgres host
 {{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.pgpool" .Subcharts.postgresql }}
 {{- else }}
-# Use external Postgres host if postgresql is disabled
 {{- .Values.ownpgserver.host }}  
 {{- end }}
 {{- end }}
@@ -63,7 +62,6 @@ Postgres port
 {{- if .Values.postgresql.enabled }}
 {{ .Subcharts.postgresql.Values.service.ports.postgresql }}
 {{- else }}
-# Use external Postgres port if postgresql is disabled
 {{- .Values.ownpgserver.port }} 
 {{- end }}
 {{- end }}
@@ -74,7 +72,6 @@ Postgres db
 {{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.postgresqlDatabase" .Subcharts.postgresql }}
 {{- else }}
-# Use external Postgres DB if postgresql is disabled
 {{- .Values.ownpgserver.database }}  
 {{- end }}
 {{- end }}
@@ -85,7 +82,6 @@ Postgres user
 {{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.postgresqlUsername" .Subcharts.postgresql }}
 {{- else }}
-# Use external Postgres user if postgresql is disabled
 {{- .Values.ownpgserver.username }} 
 {{- end }}
 {{- end }}
@@ -96,7 +92,6 @@ Postgres pass
 {{- if .Values.postgresql.enabled }}
 {{ include "postgresql-ha.postgresqlPassword" .Subcharts.postgresql }}
 {{- else }}
-# Use external Postgres password if postgresql is disabled
 {{- .Values.ownpgserver.password }} 
 {{- end }}
 {{- end }}
@@ -243,10 +238,6 @@ containers:
     subPath: {{ . }}
     {{- end }}
   {{- end }}
-
-  # This section adds support for additional volume mounts if specified in the input values.
-  # The .extraVolumeMounts field is checked, and if it exists, it's converted to YAML
-  # and indented properly to integrate with the rest of the volume mount configuration.
   {{- if .extraVolumeMounts }}
   {{- toYaml .extraVolumeMounts | nindent 2 }}
   {{- end }}
@@ -296,9 +287,6 @@ volumes:
 {{- else if eq .type "secret" }}
 - secret:
     secretName: {{ .resourceName }}
-  # This section handles cases where an emptyDir volume type is needed.
-  # emptyDir volumes provide ephemeral storage that lasts only as long as the pod runs.
-  # This adds an emptyDir volume to the configuration if specified in the input.
 {{- else if eq .type "emptyDir" }}
 - emptyDir: {}   
 {{- end }}
