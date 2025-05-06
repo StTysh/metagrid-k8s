@@ -156,7 +156,7 @@ django:
   gunicornCmdArgs:
 
   # -- Backend path prefix
-  urlPath: metagrid-backend
+  urlPath: /metagrid-backend
 
   # -- Frontend path to redirect to on login
   loginRedirect: search

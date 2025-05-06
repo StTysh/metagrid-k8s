@@ -14,7 +14,7 @@ data:
   DJANGO_ADMIN_URL: {{ .Values.django.adminUrl }}
   DJANGO_ALLOWED_HOSTS: {{ include "metagrid.djangoAllowedHosts" . | quote }}
   DJANGO_SECURE_SSL_REDIRECT: "False"
-  DJANGO_SETTINGS_MODULE: config.settings.production
+  DJANGO_SETTINGS_MODULE: metagrid.settings
   DJANGO_LOGIN_REDIRECT_URL: {{ include "metagrid.django.loginRedirect" . | quote }}
   DJANGO_LOGOUT_REDIRECT_URL: {{ include "metagrid.django.logoutRedirect" . | quote }}
   GLOBUS_CLIENT_KEY: {{ .Values.globus.clientID }}
