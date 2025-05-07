@@ -5,10 +5,10 @@ globus:
   redirect: https://localhost:3000/cart/items
   # -- Client ID for a globus thick client, the redirect will need to be the url of the frontend e.g. https://metagrid.io/metagrid
   frontend:
-    clientID: "placeholder"
+    clientID: placeholder
   # -- Client ID/Secret for globus portal, the redirect will need to be the url of the backend e.g. https://metagrid.io/metagrid-backend/complete/globus/
   backend:
-    clientID:
+    clientID: placeholder
     clientSecret:
   nodes:
     - aims3.llnl.gov
