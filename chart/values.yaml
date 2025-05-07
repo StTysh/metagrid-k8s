@@ -9,7 +9,7 @@ globus:
   # -- Client ID/Secret for globus portal, the redirect will need to be the url of the backend e.g. https://metagrid.io/metagrid-backend/complete/globus/
   backend:
     clientID: placeholder
-    clientSecret:
+    clientSecret: placeholder
   nodes:
     - aims3.llnl.gov
     - esgf-data1.llnl.gov
