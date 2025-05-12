@@ -1,57 +1,99 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "metagrid.fullname" . -}}
-{{- with .Values.ingress }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ include "metagrid.fullname" . }}
   labels:
-    {{- include "metagrid.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: react
-  {{- with .labels }}
+    {{- include "metagrid.labels" . | nindent 4 }}
+  {{- with .Values.ingress.labels }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .annotations }}
+  {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- with .className }}
+  {{- with .Values.ingress.className }}
   ingressClassName: {{ . }}
   {{- end }}
-  rules:
-    {{- $hosts := list }}
-    {{- $hostCount := len (uniq (list .react.host .django.host)) }}
-    {{- $frontendUrlPath := printf "/%v" (trimPrefix "/" $.Values.react.urlPath) }}
-    {{- $backendUrlPath := printf "/%v" (trimPrefix "/" $.Values.django.urlPath) }}
-    {{- $frontendPath := dict "path" $frontendUrlPath "name" (printf "%s-react" $fullName) "port" $.Values.react.service.port }}
-    {{- $backendPath := dict "path" $backendUrlPath "name" (printf "%s-django" $fullName) "port" $.Values.django.service.port }}
-    {{- if eq $hostCount 1 }}
-    {{- $hosts = append $hosts (dict "host" .react.host "paths" (list $frontendPath $backendPath)) }}
-    {{- else }}
-    {{- $hosts = append $hosts (dict "host" .react.host "paths" (list $frontendPath)) }}
-    {{- $hosts = append $hosts (dict "host" .django.host "paths" (list $backendPath)) }}
-    {{- end }}
-    {{- range $hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ default "ImplementationSpecific" .type }}
-            backend:
-              service:
-                name: {{ .name }}
-                port:
-                  number: {{ .port }}
-          {{- end }}
-    {{- end }}
-  {{- if .tls.enabled }}
+  {{- if .Values.ingress.tls }}
   tls:
   - hosts:
-      - {{ .react.host }}
-      - {{ .django.host }}
-    secretName: {{ .tls.secretName }}
+    - {{ .Values.ingress.host | quote }}
+    secretName: {{ include "metagrid.fullname" . }}-ingress-cert
   {{- end }}
-{{- end }}
+  rules:
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-frontend
+            port:
+              number: {{ .Values.frontend.service.port }}
+      - path: /frontend-config.js
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /api
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /accounts
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /account-confirm-email
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /proxy
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /tempStorage
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /login
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /complete
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
+      - path: /globus
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "metagrid.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
 {{- end }}
